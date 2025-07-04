@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -46,9 +47,9 @@ class AuthController extends Controller
      * Log in a user and return a JWT token.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return RedirectResponse
      */
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required|string|email',
@@ -57,11 +58,25 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (! $token = Auth::guard('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if ($token = Auth::attempt($credentials, $request->boolean('remember_me'))) {
+            $request->session()->regenerate();
+            session(['jwt_token' => $token]);
+
+            // Redirect based on role after successful login
+            $user = Auth::user();
+            if ($user->isEmployer()) {
+                return redirect()->intended(route('employer.jobs.index'));
+            } elseif ($user->isAdmin()) {
+                return redirect()->intended(route('admin.metrics'));
+            }
+
+            // Default redirect for candidates or if no specific role redirect
+            return redirect()->intended(route('jobs.index'));
         }
 
-        return $this->respondWithToken($token);
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
     /**
@@ -72,7 +87,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        return redirect()->back();
     }
 
     /**

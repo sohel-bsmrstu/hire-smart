@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
+
+     const MEMBER_TYPE_ADMIN = "admin";
+    const MEMBER_TYPE_EMPLOYEE = "employer";
+    const MEMBER_TYPE_CANDIDATE = "candidate";
 
     /**
      * The attributes that are mass assignable.
@@ -64,5 +67,51 @@ class User extends Authenticatable implements JWTSubject
         return [
             'role' => $this->role,
         ];
+    }
+
+    /**
+     * Get the jobs posted by the user (if employer).
+     */
+    public function jobs()
+    {
+        return $this->hasMany(Job::class);
+    }
+
+    /**
+     * Get the applications made by the user (if candidate).
+     */
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
+
+    /**
+     * Check user is admin
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === self::MEMBER_TYPE_ADMIN;
+    }
+
+    /**
+     * Check user is employee
+     *
+     * @return bool
+     */
+    public function isEmployer(): bool
+    {
+        return $this->role === self::MEMBER_TYPE_EMPLOYEE;
+    }
+
+    /**
+     * Check user is candidate
+     *
+     * @return bool
+     */
+    public function isCandidate(): bool
+    {
+        return $this->role === self::MEMBER_TYPE_CANDIDATE;
     }
 }
