@@ -10,7 +10,7 @@ class Job extends Model
     use HasFactory;
 
     protected $table = "job_posts";
-    
+
     protected $fillable = [
         'user_id',
         'title',
@@ -18,10 +18,6 @@ class Job extends Model
         'location',
         'salary_range',
         'required_skills',
-    ];
-
-    protected $casts = [
-        'required_skills' => 'array', // Cast to array for JSONB column
     ];
 
     /**

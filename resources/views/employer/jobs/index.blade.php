@@ -7,7 +7,7 @@
 
     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-8">
         <div class="mb-6 flex justify-end">
-            <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200">
+            <a href="{{ route('employer.jobs.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200">
                 Post New Job
             </a>
         </div>
@@ -26,7 +26,7 @@
                                 <p class="text-gray-700 text-sm mb-1"><strong class="font-semibold">Salary:</strong> {{ $job->salary_range }}</p>
                             @endif
                             @if ($job->required_skills)
-                                <p class="text-gray-700 text-sm mb-4"><strong class="font-semibold">Skills:</strong> {{ implode(', ', $job->required_skills) }}</p>
+                                <p class="text-gray-700 text-sm mb-4"><strong class="font-semibold">Skills:</strong> {{ $job->required_skills }}</p>
                             @endif
                             <p class="text-gray-700 text-sm mb-4"><strong class="font-semibold">Applications:</strong> {{ $job->applications_count }}</p>
                         </div>
@@ -37,7 +37,7 @@
                             <a href="{{ route('employer.jobs.edit', $job->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg text-center transition-all duration-200">
                                 Edit
                             </a>
-                            <a href="{{ route('employer.jobs.applications', $job->id) }}" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg text-center transition-all duration-200">
+                            <a href="" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg text-center transition-all duration-200">
                                 View Apps
                             </a>
                             <form action="{{ route('employer.jobs.destroy', $job->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this job? This action cannot be undone.');">

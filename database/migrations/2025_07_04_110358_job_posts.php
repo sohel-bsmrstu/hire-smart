@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('location');
             $table->string('salary_range')->nullable();
-            $table->jsonb('required_skills')->nullable();
+            $table->text('required_skills')->nullable();
             $table->timestamps();
         });
     }
