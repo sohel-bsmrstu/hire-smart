@@ -22,12 +22,15 @@
         @auth
             @if (Auth::user()->isCandidate())
                 <h4 class="text-xl font-bold text-gray-700 mb-4">Apply for this Job</h4>
-                <form id="apply-form" class="space-y-4">
+                <form id="apply-form" class="space-y-4" method="POST" action="/api/applications">
                     @csrf
                     <input type="hidden" name="job_id" value="{{ $job->id }}">
                     <div>
                         <label for="cover_letter" class="block text-gray-700 text-sm font-bold mb-2">Cover Letter (Optional)</label>
                         <textarea id="cover_letter" name="cover_letter" rows="6" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                        @error('cover_letter')
+                            <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                        @enderror
                     </div>
                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200">
                         Submit Application
@@ -55,55 +58,4 @@
             <p class="text-gray-600 mt-6">Please <a href="{{ route('login') }}" class="text-blue-500 hover:underline">log in</a> as a candidate to apply for this job.</p>
         @endauth
     </div>
-
-    <script>
-        document.getElementById('apply-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const form = e.target;
-            const formData = new FormData(form);
-            const messageDiv = document.getElementById('application-message');
-
-            // Get CSRF token from meta tag
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            fetch('/api/applications', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken, // Include CSRF token for API if needed, though JWT is preferred
-                    // For JWT, you'd typically add: 'Authorization': `Bearer ${yourJwtToken}`
-                },
-                body: JSON.stringify(Object.fromEntries(formData)), // Convert FormData to JSON
-            })
-            .then(response => {
-                if (!response.ok) {
-                    // Handle HTTP errors
-                    return response.json().then(err => { throw err; });
-                }
-                return response.json();
-            })
-            .then(data => {
-                messageDiv.className = 'mt-4 text-sm font-medium text-green-600';
-                messageDiv.textContent = data.message;
-                form.reset(); // Clear the form
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                messageDiv.className = 'mt-4 text-sm font-medium text-red-600';
-                if (error.message) {
-                    messageDiv.textContent = error.message;
-                } else if (error.errors) {
-                    // Handle validation errors from Laravel
-                    let errorMessage = 'Validation Error:';
-                    for (const key in error.errors) {
-                        errorMessage += `\n- ${error.errors[key].join(', ')}`;
-                    }
-                    messageDiv.textContent = errorMessage;
-                } else {
-                    messageDiv.textContent = 'An error occurred while submitting your application. Please try again.';
-                }
-            });
-        });
-    </script>
 </x-app-layout>

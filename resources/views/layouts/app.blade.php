@@ -30,13 +30,13 @@
                     HireSmart
                 </a>
                 <div class="flex items-center space-x-4">
-                    <a href="" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">View Jobs</a>
+                    <a href="{{ route('jobs.index') }}" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">View Jobs</a>
                     @auth
-                        @if (Auth::user()->role === 'employer')
-                            <a href="" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">My Jobs</a>
-                            <a href="" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">Post New Job</a>
-                        @elseif (Auth::user()->role === 'admin')
-                            <a href="" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">Admin Metrics</a>
+                        @if (Auth::user()->isEmployer())
+                            <a href="{{ route('employer.jobs.index') }}" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">My Jobs</a>
+                            <a href="{{ route('employer.jobs.create') }}" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">Post New Job</a>
+                        @elseif (Auth::user()->isAdmin())
+                            <a href="{{ route('admin.metrics') }}" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">Admin Metrics</a>
                         @endif
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
@@ -45,7 +45,7 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{route('login')}}" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">Log In</a>
+                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 font-medium rounded-lg p-2 hover:bg-gray-100 transition-colors duration-200">Log In</a>
                         <a href="{{ route('register') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200">
                             Register
                         </a>

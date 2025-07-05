@@ -37,7 +37,7 @@
                             <a href="{{ route('employer.jobs.edit', $job->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg text-center transition-all duration-200">
                                 Edit
                             </a>
-                            <a href="" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg text-center transition-all duration-200">
+                            <a href="{{ route('employer.jobs.applications', $job->id) }}" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg text-center transition-all duration-200">
                                 View Apps
                             </a>
                             <form action="{{ route('employer.jobs.destroy', $job->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this job? This action cannot be undone.');">

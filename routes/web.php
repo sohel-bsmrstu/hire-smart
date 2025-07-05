@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
@@ -20,4 +22,11 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
     Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->middleware('employer.job.access')->name('jobs.edit');
     Route::put('/jobs/{job}', [JobController::class, 'update'])->middleware('employer.job.access')->name('jobs.update');
     Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->middleware('employer.job.access')->name('jobs.destroy');
+    Route::get('/jobs/{job}/applications', [ApplicationController::class, 'employerApplications'])->middleware('employer.job.access')->name('jobs.applications');
+    Route::put('/applications/{application}/status', [ApplicationController::class, 'updateStatus'])->name('applications.updateStatus');
+});
+
+// Admin Specific Routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/metrics', [AdminController::class, 'metrics'])->name('metrics');
 });
